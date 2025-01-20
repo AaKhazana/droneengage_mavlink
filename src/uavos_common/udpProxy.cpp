@@ -59,8 +59,12 @@ bool uavos::comm::CUDPProxy::init (const char * target_address, int targetPort, 
 {
 
     // pthread initialization
+	int policy;
+    struct sched_param param;
 	m_thread = pthread_self(); // get pthread ID
-	pthread_setschedprio(m_thread, SCHED_FIFO); // setting priority
+    pthread_getschedparam(m_thread, &policy, &param);
+    param.sched_priority = SCHED_FIFO;
+    pthread_setschedparam(m_thread, policy, &param);
 
 
     // Creating socket file descriptor 

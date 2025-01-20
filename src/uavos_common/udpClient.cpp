@@ -60,9 +60,12 @@ void uavos::comm::CUDPClient::init (const char * targetIP, int broadcatsPort, co
 {
 
     // pthread initialization
+    int policy;
+    struct sched_param param;
 	m_thread = pthread_self(); // get pthread ID
-	pthread_setschedprio(m_thread, SCHED_FIFO); // setting priority
-
+    pthread_getschedparam(m_thread, &policy, &param);
+    param.sched_priority = SCHED_FIFO;
+    pthread_setschedparam(m_thread, policy, &param);
 
     // Creating socket file descriptor 
     if ( (m_SocketFD = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) { 
